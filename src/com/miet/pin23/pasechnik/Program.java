@@ -1,4 +1,4 @@
-package com.miet.pin23.pasechnik.lab2;
+package com.miet.pin23.pasechnik;
 
 public class Program {
     public static void main(String[] Args){

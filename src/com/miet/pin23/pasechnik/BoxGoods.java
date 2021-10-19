@@ -1,4 +1,4 @@
-package com.miet.pin23.pasechnik.lab2;
+package com.miet.pin23.pasechnik;
 
 /**
  * Class of goods to be stored in a box

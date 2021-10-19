@@ -1,4 +1,4 @@
-package com.miet.pin23.pasechnik.lab2;
+package com.miet.pin23.pasechnik;
 
 import java.util.ArrayList;
 
