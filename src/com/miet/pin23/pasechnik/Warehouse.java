@@ -56,16 +56,22 @@ public class Warehouse {
 
                 if (car.getType () == goods.get ( cnt ).getType ()){
                     try {
-                        car.addGoods ( goods.get ( cnt ) );
-                        goods.remove ( cnt );
-                        found = true;
-                        break;
+                        found = car.addGoods ( goods.get ( cnt ) );
+                        if(found){
+                            goods.remove ( cnt );
+                            break;
+                        }
                     }catch (InvalidClassException exc){
                         System.out.println ( exc );
                     }
                 }
             }
-            if(!found) cnt+=1;
+            if(!found)
+                if (goods.get(cnt).getType ()==GoodsType.LIQUID){
+                    train.addCar ( new CisternCarriage (  ) );
+                }
+            else
+                cnt+=1;
 
             }
     }

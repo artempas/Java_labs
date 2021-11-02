@@ -5,7 +5,7 @@ public abstract class Goods {
      * Base abstract class for all categorized goods
      */
     private String title;
-    protected GoodsType type;
+    private GoodsType type;
 
     /**
      *
@@ -14,11 +14,7 @@ public abstract class Goods {
     public GoodsType getType ( ) {
         return type;
     }
-
-    /**
-     *
-     * @return Name of a good
-     */
+    public void SetType(GoodsType t){type = t;}
     public String getTitle(){
 
         return title;
@@ -37,8 +33,11 @@ public abstract class Goods {
      * Prints good in System.out
      */
     public void printGoods(){
-        System.out.print( "Title: "+title+" | " );
+        System.out.print( "\t\tTitle: "+title+" | " );
         System.out.print("Type: ");
         System.out.println ( type );
+    }
+    public String toString(){
+        return type.toString ()+":"+this.title;
     }
 }

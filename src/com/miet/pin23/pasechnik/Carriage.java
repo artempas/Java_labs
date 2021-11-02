@@ -40,7 +40,7 @@ public abstract class Carriage{
              goodsValue) {
 
             try{
-                if (goods.type == type)
+                if (goods.getType() == type)
                     rightGoods.add ( goods );
                 else {
                     throw new InvalidClassException ( "Goods type doesn't match carriage type" );
@@ -58,13 +58,13 @@ public abstract class Carriage{
      * prints inappropriate goods
      * @param goodsValue ArrayList of new goods to be placed in a carriage
      */
-    public void addGoods(ArrayList<Goods> goodsValue) {
+    public boolean addGoods(ArrayList<Goods> goodsValue) {
         ArrayList<Goods> rightGoods = new ArrayList<Goods> (  );
         for (Goods goods:
              goodsValue) {
 
             try{
-                if (goods.type == type)
+                if (goods.getType () == type)
                     rightGoods.add ( goods );
                 else {
                     throw new InvalidClassException ( "Goods type doesn't match carriage type" );
@@ -75,15 +75,18 @@ public abstract class Carriage{
             }
         }
         this.goods.addAll ( rightGoods );
+        return (rightGoods.size ()>=1);
     }
     /**
      * adds one new good to existing ones with type check
      * prints inappropriate goods
      * @param goodsValue new good to be placed in a carriage
      */
-    public void addGoods(Goods goodsValue) throws InvalidClassException {
-        if (goodsValue.type == type)
+    public boolean addGoods(Goods goodsValue) throws InvalidClassException {
+        if (goodsValue.getType () == type){
             goods.add ( goodsValue );
+            return true;
+        }
         else {
             throw new InvalidClassException ( "Goods type doesn't match carriage type" );
         }
@@ -96,11 +99,19 @@ public abstract class Carriage{
      * Prints carriage to System.out
      */
     public void printCarriage (){
-        System.out.print ( "Car:\nType: " );
-        System.out.println ( type );
+        System.out.print ("\tCarriage: "+type.toString () );
         for (Goods good:
              goods) {
             good.printGoods ();
+            System.out.println (  );
         }
+    }
+    public String toString (){
+        StringBuilder str= new StringBuilder ( "Carriage:" + type.toString ( ) +'\n');
+        for (Goods good:
+             goods) {
+            str.append ( good.toString ( ) ).append ( '\n' );
+        }
+        return str.toString ( );
     }
 }

@@ -4,6 +4,6 @@ public class ShakyGoods extends Goods{
 
     public ShakyGoods(String titleValue){
         setTitle ( titleValue );
-        type = GoodsType.SHAKY;
+        SetType(GoodsType.SHAKY);
     }
 }

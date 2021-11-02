@@ -6,6 +6,6 @@ package com.miet.pin23.pasechnik;
 public class BoxGoods extends Goods{
     public BoxGoods(String titleValue){
         setTitle ( titleValue );
-        type = GoodsType.BOX;
+        SetType(GoodsType.BOX);
     }
 }
