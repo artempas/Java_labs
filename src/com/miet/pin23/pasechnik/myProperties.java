@@ -9,24 +9,26 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 public class myProperties {
-	private static Logger log = new Logger ( myProperties.class.getName () );
-	public static String propFileName;
-
-	public String getPropValues(Props p){
-		Properties prop = new Properties();
-		try {
+    private static Logger log = new Logger ( myProperties.class.getName ( ) );
+    private static ExceptionHandler exceptionHandler = new ExceptionHandler(myProperties.class.getName ());
+    public static String propFileName;
 
 
-			try (FileInputStream fis = new FileInputStream(propFileName)) {
-				prop.load(fis);
-			} catch (IOException exc){
-				exc.printStackTrace ();
-			}
+    public String getPropValues ( Props p ) {
+        Properties prop = new Properties ( );
+        try {
 
-			Date time = new Date(System.currentTimeMillis());
-		} catch (Exception e) {
-			e.printStackTrace ();
-		}
-		return prop.getProperty ( p.toString () );
-	}
+
+            try (FileInputStream fis = new FileInputStream ( propFileName )) {
+                prop.load ( fis );
+            } catch (IOException exc) {
+                exceptionHandler.makeErr ("Properties hasn't been read",exc);
+            }
+
+            Date time = new Date ( System.currentTimeMillis ( ) );
+        } catch (Exception e) {
+            e.printStackTrace ( );
+        }
+        return prop.getProperty ( p.toString ( ) );
+    }
 }

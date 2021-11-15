@@ -1,25 +1,20 @@
 package com.miet.pin23.pasechnik;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
-
-public class Writer {
-    protected String encoding;
-    protected File file;
-    private static Logger log = new Logger ( Writer.class.getName ( ) );
-    private static ExceptionHandler exceptionHandler = new ExceptionHandler ( Writer.class.getName ( ) );
-
-    public Writer ( String path ) {
-        file = new File ( path );
-        encoding = "UTF-8";
+public class LogWriter extends Writer {
+    public LogWriter ( String path ) {
+        super ( path );
     }
 
-    public Writer ( String path , String _encoding ) {
-        file = new File ( path );
-        this.encoding = _encoding;
+    public LogWriter ( String path , String encoding ) {
+        super ( path , encoding );
     }
 
-    public void WriteContents ( String to_write , boolean append ) throws IOException {
+    public void WriteContents ( String to_write , boolean append ) {
         try {
             if ( file == null ) {
                 throw new IllegalArgumentException ( "File shouldn't be null" );
@@ -27,7 +22,7 @@ public class Writer {
             if ( !file.exists ( ) ) {
                 if ( !file.createNewFile ( ) )
                     throw new IOException ( "Unable to create file" );
-                log.log ( Level.INFO , String.format ( "File %s created" , file.getName ( ) ) );
+                System.out.println ( ConsoleColors.ANSI_BLUE + String.format ( "File %s created" , file.getName ( ) ) + ConsoleColors.ANSI_RESET );
             }
             if ( !file.canRead ( ) ) {
                 throw new IllegalArgumentException ( "Inaccessible file" );
@@ -39,12 +34,11 @@ public class Writer {
                 bufferedWriter.write ( to_write );
             }
         } catch (IOException exc) {
-            exceptionHandler.addException ( exc );
-            throw exc;
+            exc.printStackTrace ( );
         }
     }
 
-    public void WriteContents ( String to_write ) throws IOException {
+    public void WriteContents ( String to_write ) {
         try {
             if ( file == null ) {
                 throw new IllegalArgumentException ( "File shouldn't be null" );
@@ -52,7 +46,7 @@ public class Writer {
             if ( !file.exists ( ) ) {
                 if ( !file.createNewFile ( ) )
                     throw new IOException ( "Unable to create file" );
-                log.log ( Level.INFO , String.format ( "File %s created" , file.getName ( ) ) );
+                System.out.printf ( "%s created" , file.getName ( ) );
             }
             if ( !file.canRead ( ) ) {
                 throw new IllegalArgumentException ( "Inaccessible file" );
@@ -64,9 +58,7 @@ public class Writer {
                 bufferedWriter.write ( to_write );
             }
         } catch (IOException exc) {
-            exceptionHandler.addException ( exc );
-            throw new IOException ( );
+            exc.printStackTrace ( );
         }
     }
-
 }

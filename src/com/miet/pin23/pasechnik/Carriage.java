@@ -1,12 +1,15 @@
 package com.miet.pin23.pasechnik;
 
 import java.io.InvalidClassException;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Base abstract class for all carriages
  */
-public abstract class Carriage{
+public abstract class Carriage implements Serializable {
+
+    private static ExceptionHandler exceptionHandler = new ExceptionHandler (Carriage.class.getName ());
 
     /**
      * type of goods allowed for transporting in a particular carriage (depends on carriage class)
@@ -44,10 +47,11 @@ public abstract class Carriage{
                     rightGoods.add ( goods );
                 else {
                     throw new InvalidClassException ( "Goods type doesn't match carriage type" );
+
+
                 }
             }catch (InvalidClassException exc){
-                System.out.print ( exc );
-                System.out.println ( goods );
+                exceptionHandler.addException ( exc );
             }
         }
         this.goods = rightGoods;
@@ -70,8 +74,7 @@ public abstract class Carriage{
                     throw new InvalidClassException ( "Goods type doesn't match carriage type" );
                 }
             }catch (InvalidClassException exc){
-                System.out.print ( exc );
-                System.out.println ( goods );
+                exceptionHandler.addException (exc.getMessage (), exc,true );
             }
         }
         this.goods.addAll ( rightGoods );
@@ -88,7 +91,9 @@ public abstract class Carriage{
             return true;
         }
         else {
-            throw new InvalidClassException ( "Goods type doesn't match carriage type" );
+            InvalidClassException exc = new InvalidClassException ( "Goods type doesn't match carriage type" );
+            exceptionHandler.addException ("", new InvalidClassException ( "Goods type doesn't match carriage type" ) );
+            throw exc;
         }
     }
     public Carriage(){
@@ -99,7 +104,7 @@ public abstract class Carriage{
      * Prints carriage to System.out
      */
     public void printCarriage (){
-        System.out.print ("\tCarriage: "+type.toString () );
+        System.out.println ("\tCarriage: "+type.toString () );
         for (Goods good:
              goods) {
             good.printGoods ();

@@ -8,4 +8,8 @@ public class BoxGoods extends Goods{
         setTitle ( titleValue );
         SetType(GoodsType.BOX);
     }
+    public BoxGoods(){
+        setTitle ( "" );
+        SetType(GoodsType.BOX);
+    }
 }

@@ -1,10 +1,11 @@
 package com.miet.pin23.pasechnik;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Random;
 
 public class Program {
     public static Logger logger = new Logger ( "Main" );
@@ -21,7 +22,12 @@ public class Program {
             while (buf.isBlank ( )) {
                 buf = reader.readLine ( );
             }
-            i = Integer.parseInt ( buf );
+            try {
+                i = Integer.parseInt ( buf );
+            } catch (NumberFormatException ignored) {
+                System.out.println ( ConsoleColors.ANSI_RED + "Введите цифру!" + ConsoleColors.ANSI_RESET );
+                return integerInput ( );
+            }
         } catch (IOException ignored) {
         }
         return i;
@@ -63,7 +69,7 @@ public class Program {
         System.out.print ( ConsoleColors.ANSI_BLUE + "Username: " + ConsoleColors.ANSI_RESET );
         try {
             username = reader.readLine ( );
-            System.out.println ( ConsoleColors.ANSI_BLUE + "Password: " + ConsoleColors.ANSI_RESET );
+            System.out.print ( ConsoleColors.ANSI_BLUE + "Password: " + ConsoleColors.ANSI_RESET );
             password = reader.readLine ( );
         } catch (IOException exc) {
             System.out.println ( ConsoleColors.ANSI_RED + "Input error" + ConsoleColors.ANSI_RESET );
@@ -139,7 +145,7 @@ public class Program {
                 System.out.println ( ConsoleColors.ANSI_RED + "Введите цифру от 1 до 5" + ConsoleColors.ANSI_RESET );
                 menu = integerInput ( );
             }
-            System.out.println (ConsoleColors.ANSI_WHITE+ "----------------------------------------------------------------------" +ConsoleColors.ANSI_RESET);
+            System.out.println ( ConsoleColors.ANSI_WHITE + "----------------------------------------------------------------------" + ConsoleColors.ANSI_RESET );
             switch (menu) {
                 case (1):
                     logger.log ( Level.INFO , "Asked for list of trains" );
@@ -163,7 +169,7 @@ public class Program {
                     if ( cnt == 1 ) trains.add ( addTrain ( ) );
                     else
                         while (cnt != 0) {
-                            System.out.println ( ConsoleColors.ANSI_PURPLE+(cpy-cnt+1)+" поезд"+ ConsoleColors.ANSI_RESET ) ;
+                            System.out.println ( ConsoleColors.ANSI_PURPLE + (cpy - cnt + 1) + " поезд" + ConsoleColors.ANSI_RESET );
                             trains.add ( addTrain ( ) );
                             cnt--;
                         }
@@ -225,12 +231,16 @@ public class Program {
                     } else break;
                 case 5:
                     Writer writer = new Writer ( database_path );
-                    String str = "";
+                    StringBuilder str = new StringBuilder ( );
                     for (Train train :
                             trains) {
-                        str += train.ToString ( ) + '\n';
+                        str.append ( train.ToString ( ) ).append ( '\n' );
                     }
-                    writer.WriteContents ( str );
+                    try {
+                        writer.WriteContents ( str.toString ( ) );
+                    } catch (IOException exc) {
+                        System.out.println ( ConsoleColors.ANSI_RED + "An error has occurred while writing to file. For more details check log" + ConsoleColors.ANSI_RESET );
+                    }
                     edited = false;
                     logger.log ( Level.INFO , "Database saved" );
                     break;
@@ -240,10 +250,134 @@ public class Program {
     }
 
 
-    public static void main ( String[] Args ) {
-        myProperties.propFileName = SETTINGS_FILENAME;
-        Logger.writer = new Writer ( propReader.getPropValues ( Props.log_to_file ) );
-        lab3 ( );
+    public static void lab4 ( ) {
+
+        ArrayList<String> results = new ArrayList<String> ( 4 );
+
+        logger.log ( Level.INFO , "Program started\nArrayList" );
+        System.out.print ( ConsoleColors.ANSI_BLUE + "Введите размер массивов: " + ConsoleColors.ANSI_RESET );
+        int size = integerInput ( );
+        ArrayList<Train> trains = new ArrayList<Train> ( size );
+        ArrayList<Long> arrayListTimes = new ArrayList<Long> ( size );
+        long arrayListInitTime = System.currentTimeMillis ( );
+        for (int i = 0; i < size; i++) {
+            Train train = new Train ( );
+            train.generateRandom ( 3 , 3 );
+            trains.add ( train );
+            arrayListTimes.add(System.currentTimeMillis ( ) );
+            if ( i == 0 )
+                logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , arrayListTimes.get ( i ) - arrayListInitTime ) );
+            else
+                logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , arrayListTimes.get ( i ) - arrayListTimes.get ( i - 1 ) ) );
+        }
+        Long arrayListTotalTime = System.currentTimeMillis ( ) - arrayListInitTime;
+        long sum = arrayListTimes.get ( 0 )-arrayListInitTime;
+        for (int i = 1; i < size; i++) {
+            sum += arrayListTimes.get ( i )-arrayListTimes.get ( i-1 );
+        }
+        String format = String.format ( "ArrayList:\n" +
+                "Total time: %d ms\n" +
+                "Average per element:%f" , arrayListTotalTime , (float)sum / (float)size );
+        logger.log ( Level.INFO ,
+                format );
+        results.add ( format );
+
+
+
+
+
+        logger.log ( Level.INFO , "LinkedList" );
+        LinkedList<Train> trainLinkedList = new LinkedList<Train> ( );
+        ArrayList<Long> lLTimes = new ArrayList<> ( size );
+        long lLInitTime = System.currentTimeMillis ( );
+        for (int i = 0; i < size; i++) {
+            Train train = new Train ( );
+            train.generateRandom ( 3 , 3 );
+            trainLinkedList.add ( train );
+            lLTimes.add (System.currentTimeMillis () );
+            if ( i==0 )logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , arrayListTimes.get ( 0 )-lLInitTime ) );
+            else logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , arrayListTimes.get ( i )-arrayListTimes.get ( i-1 ) ) );
+        }
+        Long lLTotalTime = System.currentTimeMillis ( ) - lLInitTime;
+        sum = lLTimes.get ( 0 )-lLInitTime;
+        for (int i = 1; i < size; i++) {
+            sum += lLTimes.get ( i )-lLTimes.get ( i-1 );
+        }
+        format = String.format ( """
+                LinkedList:
+                Total time: %d ms
+                Average per element:%f""" , lLTotalTime , (float)sum / (float)size );
+        logger.log ( Level.INFO ,
+                format );
+        results.add ( format );
+
+
+        logger.log ( Level.INFO,"ArrayList Edit" );
+        long aLEditStart = System.currentTimeMillis ( );
+        ArrayList<Long> aLEditTimes = new ArrayList<Long> ( size / 10 );
+        for (int ignored = 0; ignored < size / 10; ignored++) {
+            int i = new Random ( ).nextInt ( size-ignored );
+            trains.remove ( i );
+            aLEditTimes.add(System.currentTimeMillis () );
+            if ( ignored==0 )logger.log ( Level.INFO , String.format ( "remove: ID = %d, %d ms " , i , aLEditTimes.get ( 0 )-aLEditStart ) );
+            else logger.log ( Level.INFO , String.format ( "remove: ID = %d, %d ms " , i , aLEditTimes.get ( ignored )-aLEditTimes.get ( ignored-1 ) ) );
+        }
+        long aLEditTotal = System.currentTimeMillis () - aLEditStart;
+        sum = aLEditTimes.get ( 0 )-aLEditStart;
+        for (int i = 1; i < size/10; i++) {
+            sum += aLEditTimes.get ( i )-aLEditTimes.get ( i-1 );
+        }
+        format = String.format ( """
+                ArrayList edit:
+                Total time: %d ms
+                Average per element:%f""" , aLEditTotal , (float)sum /(float) (size / 10) );
+        logger.log ( Level.INFO ,
+                format );
+        results.add ( format );
+
+
+
+        logger.log ( Level.INFO,"LinkedList Edit" );
+        long lLEditStart = System.currentTimeMillis ( );
+        ArrayList<Long> lLEditTimes = new ArrayList<Long> ( size / 10 );
+        for (int ignored = 0; ignored < size / 10; ignored++) {
+            int i = new Random ( ).nextInt ( size-ignored );
+            trainLinkedList.remove ( i );
+            lLEditTimes.add(System.currentTimeMillis () );
+            if ( ignored==0 )logger.log ( Level.INFO , String.format ( "remove: ID = %d, %d ms " , i , lLEditTimes.get ( 0 )-lLEditStart ) );
+            else logger.log ( Level.INFO , String.format ( "remove: ID = %d, %d ms " , i , lLEditTimes.get ( ignored )-lLEditTimes.get ( ignored-1 ) ) );
+        }
+        long lLEditTotal = System.currentTimeMillis () - lLEditStart;
+        sum = lLEditTimes.get ( 0 )-lLEditStart;
+        for (int i = 1; i < size/10; i++) {
+            sum += lLEditTimes.get ( i )-lLEditTimes.get ( i-1 );
+        }
+        format = String.format ( """
+                LinkedList edit:
+                Total time: %d ms
+                Average per element:%f""" , lLEditTotal , (float)sum / (float)(size / 10) );
+        logger.log ( Level.INFO ,
+                format );
+        results.add ( format );
+
+
+
+        System.out.print ( ConsoleColors.ANSI_YELLOW );
+        for (String res :
+                results) {
+            System.out.println ( res );
+        }
+        System.out.println ( ConsoleColors.ANSI_RESET );
 
     }
+
+
+    public static void main ( String[] Args ) {
+        myProperties.propFileName = SETTINGS_FILENAME;
+        Logger.writer = new LogWriter ( propReader.getPropValues ( Props.log_to_file ) );
+        lab4 ( );
+
+    }
+
 }
+
