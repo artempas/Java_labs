@@ -1,7 +1,6 @@
 package com.miet.pin23.pasechnik;
 
 import java.io.*;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -250,132 +249,235 @@ public class Program {
     }
 
 
-    public static void lab4 ( ) {
+    public static ArrayList<Long> lab4 ( boolean dataOnly ) {
 
-        ArrayList<String> results = new ArrayList<String> ( 4 );
+        if ( !dataOnly ) {
+            ArrayList<String> results = new ArrayList<String> ( 4 );
 
-        logger.log ( Level.INFO , "Program started\nArrayList" );
-        System.out.print ( ConsoleColors.ANSI_BLUE + "Введите размер массивов: " + ConsoleColors.ANSI_RESET );
-        int size = integerInput ( );
-        ArrayList<Train> trains = new ArrayList<Train> ( size );
-        ArrayList<Long> arrayListTimes = new ArrayList<Long> ( size );
-        long arrayListInitTime = System.currentTimeMillis ( );
-        for (int i = 0; i < size; i++) {
-            Train train = new Train ( );
-            train.generateRandom ( 3 , 3 );
-            trains.add ( train );
-            arrayListTimes.add(System.currentTimeMillis ( ) );
-            if ( i == 0 )
-                logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , arrayListTimes.get ( i ) - arrayListInitTime ) );
-            else
-                logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , arrayListTimes.get ( i ) - arrayListTimes.get ( i - 1 ) ) );
+            logger.log ( Level.INFO , "Program started\nArrayList" );
+            System.out.print ( ConsoleColors.ANSI_BLUE + "Введите размер массивов: " + ConsoleColors.ANSI_RESET );
+            int size = integerInput ( );
+
+            ArrayList<Train> trains = new ArrayList<Train> ( size );
+            ArrayList<Long> arrayListTimes = new ArrayList<Long> ( size );
+            long arrayListInitTime = System.currentTimeMillis ( );
+            for (int i = 0; i < size; i++) {
+                Train train = new Train ( );
+                train.generateRandom ( 3 , 3 );
+                trains.add ( train );
+                arrayListTimes.add ( System.currentTimeMillis ( ) );
+                if ( i == 0 )
+                    logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , arrayListTimes.get ( i ) - arrayListInitTime ) );
+                else
+                    logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , arrayListTimes.get ( i ) - arrayListTimes.get ( i - 1 ) ) );
+            }
+            Long arrayListTotalTime = System.currentTimeMillis ( ) - arrayListInitTime;
+            long sum = arrayListTimes.get ( 0 ) - arrayListInitTime;
+            for (int i = 1; i < size; i++) {
+                sum += arrayListTimes.get ( i ) - arrayListTimes.get ( i - 1 );
+            }
+            String format = String.format ( "ArrayList:\n" +
+                    "Total time: %d ms\n" +
+                    "Average per element:%f" , arrayListTotalTime , (float) sum / (float) size );
+            logger.log ( Level.INFO ,
+                    format );
+            results.add ( format );
+
+
+            logger.log ( Level.INFO , "LinkedList" );
+            LinkedList<Train> trainLinkedList = new LinkedList<Train> ( );
+            ArrayList<Long> lLTimes = new ArrayList<> ( size );
+            long lLInitTime = System.currentTimeMillis ( );
+            for (int i = 0; i < size; i++) {
+                Train train = new Train ( );
+                train.generateRandom ( 3 , 3 );
+                trainLinkedList.add ( train );
+                lLTimes.add ( System.currentTimeMillis ( ) );
+                if ( i == 0 )
+                    logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , arrayListTimes.get ( 0 ) - lLInitTime ) );
+                else
+                    logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , arrayListTimes.get ( i ) - arrayListTimes.get ( i - 1 ) ) );
+            }
+            Long lLTotalTime = System.currentTimeMillis ( ) - lLInitTime;
+            sum = lLTimes.get ( 0 ) - lLInitTime;
+            for (int i = 1; i < size; i++) {
+                sum += lLTimes.get ( i ) - lLTimes.get ( i - 1 );
+            }
+            format = String.format ( """
+                    LinkedList:
+                    Total time: %d ms
+                    Average per element:%f""" , lLTotalTime , (float) sum / (float) size );
+            logger.log ( Level.INFO ,
+                    format );
+            results.add ( format );
+
+
+            logger.log ( Level.INFO , "ArrayList Edit" );
+            long aLEditStart = System.currentTimeMillis ( );
+            ArrayList<Long> aLEditTimes = new ArrayList<Long> ( size / 10 );
+            for (int ignored = 0; ignored < size / 10; ignored++) {
+                int i = new Random ( ).nextInt ( size - ignored );
+                trains.remove ( i );
+                aLEditTimes.add ( System.currentTimeMillis ( ) );
+                if ( ignored == 0 )
+                    logger.log ( Level.INFO , String.format ( "remove: ID = %d, %d ms " , i , aLEditTimes.get ( 0 ) - aLEditStart ) );
+                else
+                    logger.log ( Level.INFO , String.format ( "remove: ID = %d, %d ms " , i , aLEditTimes.get ( ignored ) - aLEditTimes.get ( ignored - 1 ) ) );
+            }
+            long aLEditTotal = System.currentTimeMillis ( ) - aLEditStart;
+            sum = aLEditTimes.get ( 0 ) - aLEditStart;
+            for (int i = 1; i < size / 10; i++) {
+                sum += aLEditTimes.get ( i ) - aLEditTimes.get ( i - 1 );
+            }
+            format = String.format ( """
+                    ArrayList edit:
+                    Total time: %d ms
+                    Average per element:%f""" , aLEditTotal , (float) sum / (float) (size / 10) );
+            logger.log ( Level.INFO ,
+                    format );
+            results.add ( format );
+
+
+            logger.log ( Level.INFO , "LinkedList Edit" );
+            long lLEditStart = System.currentTimeMillis ( );
+            ArrayList<Long> lLEditTimes = new ArrayList<Long> ( size / 10 );
+            for (int ignored = 0; ignored < size / 10; ignored++) {
+                int i = new Random ( ).nextInt ( size - ignored );
+                trainLinkedList.remove ( i );
+                lLEditTimes.add ( System.currentTimeMillis ( ) );
+                if ( ignored == 0 )
+                    logger.log ( Level.INFO , String.format ( "remove: ID = %d, %d ms " , i , lLEditTimes.get ( 0 ) - lLEditStart ) );
+                else
+                    logger.log ( Level.INFO , String.format ( "remove: ID = %d, %d ms " , i , lLEditTimes.get ( ignored ) - lLEditTimes.get ( ignored - 1 ) ) );
+            }
+            long lLEditTotal = System.currentTimeMillis ( ) - lLEditStart;
+            sum = lLEditTimes.get ( 0 ) - lLEditStart;
+            for (int i = 1; i < size / 10; i++) {
+                sum += lLEditTimes.get ( i ) - lLEditTimes.get ( i - 1 );
+            }
+            format = String.format ( """
+                    LinkedList edit:
+                    Total time: %d ms
+                    Average per element:%f""" , lLEditTotal , (float) sum / (float) (size / 10) );
+            logger.log ( Level.INFO ,
+                    format );
+            results.add ( format );
+
+
+            System.out.print ( ConsoleColors.ANSI_YELLOW );
+            for (String res :
+                    results) {
+                System.out.println ( res );
+            }
+            System.out.println ( ConsoleColors.ANSI_RESET );
+
+
+            //----------------------------------------------------------------------------------
+            System.out.println ( ConsoleColors.ANSI_GREEN + "ДОП" + ConsoleColors.ANSI_RESET );
+
+
+            size = (size * 3) / 2 + 1;
+            ArrayList<Train> trains_dop = new ArrayList<Train> ( size );
+            ArrayList<Long> dopTimes = new ArrayList<> ( size );
+            long dopInitTime = System.currentTimeMillis ( );
+            for (int i = 0; i < size; i++) {
+                Train train = new Train ( );
+                train.generateRandom ( 3 , 3 );
+                trains_dop.add ( train );
+                dopTimes.add ( System.currentTimeMillis ( ) );
+                if ( i == 0 )
+                    logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , dopTimes.get ( 0 ) - lLInitTime ) );
+                else
+                    logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , dopTimes.get ( i ) - dopTimes.get ( i - 1 ) ) );
+            }
+            Long dopTotalTime = System.currentTimeMillis ( ) - dopInitTime;
+
+            System.out.println ( ConsoleColors.ANSI_CYAN + String.format ( "Разница во времени заполнения между исходным и увеличенным массивом составляет: %d мс" , dopTotalTime - arrayListTotalTime ) + ConsoleColors.ANSI_RESET );
+            return null;
         }
-        Long arrayListTotalTime = System.currentTimeMillis ( ) - arrayListInitTime;
-        long sum = arrayListTimes.get ( 0 )-arrayListInitTime;
-        for (int i = 1; i < size; i++) {
-            sum += arrayListTimes.get ( i )-arrayListTimes.get ( i-1 );
+        else {
+            ArrayList<Long> Results = new ArrayList<Long> ( );
+            for (int size = 10; size <= 100_000; size *= 10) {
+                ArrayList<Train> trains = new ArrayList<Train> ( size );
+                long InitTime = System.currentTimeMillis ( );
+                for (int i = 0; i < size; i++) {
+                    Train train = new Train ( );
+                    train.generateRandom ( 3 , 3 );
+                    trains.add ( train );
+
+                }
+                Results.add ( System.currentTimeMillis ( ) - InitTime );
+
+                LinkedList<Train> trainLinkedList = new LinkedList<Train> ( );
+                InitTime = System.currentTimeMillis ( );
+                for (int i = 0; i < size; i++) {
+                    Train train = new Train ( );
+                    train.generateRandom ( 3 , 3 );
+                    trainLinkedList.add ( train );
+                }
+                Results.add ( System.currentTimeMillis ( ) - InitTime );
+                InitTime = System.currentTimeMillis ( );
+                for (int ignored = 0; ignored < size /10; ignored++) {
+                    int i = new Random ( ).nextInt ( size - ignored );
+                    trains.remove ( i );
+                }
+                Results.add ( System.currentTimeMillis ( ) - InitTime );
+                InitTime = System.currentTimeMillis ( );
+                for (int ignored = 0; ignored < size / 10; ignored++) {
+                    int i = new Random ( ).nextInt ( size - ignored );
+                    trainLinkedList.remove ( i );
+                }
+                Results.add ( System.currentTimeMillis ( ) - InitTime );
+            }
+            return Results;
         }
-        String format = String.format ( "ArrayList:\n" +
-                "Total time: %d ms\n" +
-                "Average per element:%f" , arrayListTotalTime , (float)sum / (float)size );
-        logger.log ( Level.INFO ,
-                format );
-        results.add ( format );
-
-
-
-
-
-        logger.log ( Level.INFO , "LinkedList" );
-        LinkedList<Train> trainLinkedList = new LinkedList<Train> ( );
-        ArrayList<Long> lLTimes = new ArrayList<> ( size );
-        long lLInitTime = System.currentTimeMillis ( );
-        for (int i = 0; i < size; i++) {
-            Train train = new Train ( );
-            train.generateRandom ( 3 , 3 );
-            trainLinkedList.add ( train );
-            lLTimes.add (System.currentTimeMillis () );
-            if ( i==0 )logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , arrayListTimes.get ( 0 )-lLInitTime ) );
-            else logger.log ( Level.INFO , String.format ( "add: ID = %d, %d ms " , i , arrayListTimes.get ( i )-arrayListTimes.get ( i-1 ) ) );
-        }
-        Long lLTotalTime = System.currentTimeMillis ( ) - lLInitTime;
-        sum = lLTimes.get ( 0 )-lLInitTime;
-        for (int i = 1; i < size; i++) {
-            sum += lLTimes.get ( i )-lLTimes.get ( i-1 );
-        }
-        format = String.format ( """
-                LinkedList:
-                Total time: %d ms
-                Average per element:%f""" , lLTotalTime , (float)sum / (float)size );
-        logger.log ( Level.INFO ,
-                format );
-        results.add ( format );
-
-
-        logger.log ( Level.INFO,"ArrayList Edit" );
-        long aLEditStart = System.currentTimeMillis ( );
-        ArrayList<Long> aLEditTimes = new ArrayList<Long> ( size / 10 );
-        for (int ignored = 0; ignored < size / 10; ignored++) {
-            int i = new Random ( ).nextInt ( size-ignored );
-            trains.remove ( i );
-            aLEditTimes.add(System.currentTimeMillis () );
-            if ( ignored==0 )logger.log ( Level.INFO , String.format ( "remove: ID = %d, %d ms " , i , aLEditTimes.get ( 0 )-aLEditStart ) );
-            else logger.log ( Level.INFO , String.format ( "remove: ID = %d, %d ms " , i , aLEditTimes.get ( ignored )-aLEditTimes.get ( ignored-1 ) ) );
-        }
-        long aLEditTotal = System.currentTimeMillis () - aLEditStart;
-        sum = aLEditTimes.get ( 0 )-aLEditStart;
-        for (int i = 1; i < size/10; i++) {
-            sum += aLEditTimes.get ( i )-aLEditTimes.get ( i-1 );
-        }
-        format = String.format ( """
-                ArrayList edit:
-                Total time: %d ms
-                Average per element:%f""" , aLEditTotal , (float)sum /(float) (size / 10) );
-        logger.log ( Level.INFO ,
-                format );
-        results.add ( format );
-
-
-
-        logger.log ( Level.INFO,"LinkedList Edit" );
-        long lLEditStart = System.currentTimeMillis ( );
-        ArrayList<Long> lLEditTimes = new ArrayList<Long> ( size / 10 );
-        for (int ignored = 0; ignored < size / 10; ignored++) {
-            int i = new Random ( ).nextInt ( size-ignored );
-            trainLinkedList.remove ( i );
-            lLEditTimes.add(System.currentTimeMillis () );
-            if ( ignored==0 )logger.log ( Level.INFO , String.format ( "remove: ID = %d, %d ms " , i , lLEditTimes.get ( 0 )-lLEditStart ) );
-            else logger.log ( Level.INFO , String.format ( "remove: ID = %d, %d ms " , i , lLEditTimes.get ( ignored )-lLEditTimes.get ( ignored-1 ) ) );
-        }
-        long lLEditTotal = System.currentTimeMillis () - lLEditStart;
-        sum = lLEditTimes.get ( 0 )-lLEditStart;
-        for (int i = 1; i < size/10; i++) {
-            sum += lLEditTimes.get ( i )-lLEditTimes.get ( i-1 );
-        }
-        format = String.format ( """
-                LinkedList edit:
-                Total time: %d ms
-                Average per element:%f""" , lLEditTotal , (float)sum / (float)(size / 10) );
-        logger.log ( Level.INFO ,
-                format );
-        results.add ( format );
-
-
-
-        System.out.print ( ConsoleColors.ANSI_YELLOW );
-        for (String res :
-                results) {
-            System.out.println ( res );
-        }
-        System.out.println ( ConsoleColors.ANSI_RESET );
 
     }
 
 
     public static void main ( String[] Args ) {
+
         myProperties.propFileName = SETTINGS_FILENAME;
         Logger.writer = new LogWriter ( propReader.getPropValues ( Props.log_to_file ) );
-        lab4 ( );
+        Window loading_win = new Window ( windowType.LOADING );
+        ArrayList<Long> yAll = lab4 ( true );
+        System.out.println ( yAll );
+        ArrayList<Integer> xData = new ArrayList<> ( );
+        xData.add ( 0 );
+        xData.add ( 10 );
+        xData.add ( 100 );
+        xData.add ( 1_000 );
+        xData.add ( 10_000 );
+        xData.add ( 100_000 );
+
+        ArrayList<Long> arrayListAdd = new ArrayList<Long> ( );
+        arrayListAdd.add ( 0L );
+        for (int i = 0; i < (yAll != null ? yAll.size ( ) : 0); i += 4)
+            arrayListAdd.add ( yAll.get ( i ) );
+        ArrayList<Long> linkedListAdd = new ArrayList<Long> ( );
+        linkedListAdd.add ( 0L );
+        for (int i = 1; i < (yAll != null ? yAll.size ( ) : 0); i += 4)
+            linkedListAdd.add ( yAll.get ( i ) );
+        ArrayList<Long> arrayListRemove = new ArrayList<Long> ( );
+        arrayListRemove.add ( 0L );
+        for (int i = 2; i < (yAll != null ? yAll.size ( ) : 0); i += 4)
+            arrayListRemove.add ( yAll.get ( i ) );
+        ArrayList<Long> linkedListRemove = new ArrayList<Long> ( );
+        linkedListRemove.add ( 0L );
+        for (int i = 3; i < (yAll != null ? yAll.size ( ) : 0); i += 4)
+            linkedListRemove.add ( yAll.get ( i ) );
+
+        assert (linkedListAdd.size ( ) == xData.size ( ) &&
+                xData.size ( ) == arrayListAdd.size ( ) &&
+                linkedListRemove.size ( ) == xData.size ( ) &&
+                arrayListRemove.size ( ) == xData.size ( ));
+        loading_win.dispose ();
+
+        System.out.println ( xData );
+        System.out.println ( arrayListRemove );
+        System.out.println ( linkedListRemove );
+        Window addWin = new Window ( windowType.ADD , xData , arrayListAdd , linkedListAdd );
+        Window removeWin = new Window ( windowType.EDIT, xData,arrayListRemove, linkedListRemove );
 
     }
 

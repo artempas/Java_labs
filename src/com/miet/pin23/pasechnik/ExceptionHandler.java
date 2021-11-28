@@ -69,6 +69,7 @@ public class ExceptionHandler {
         return new Throwable(e);
     }
 
+
     /**
      * Adds given exception to list of errors and returns it to be thrown with logging
      * @param messageForLog message to be written to log
