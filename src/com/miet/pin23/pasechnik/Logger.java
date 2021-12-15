@@ -3,7 +3,6 @@ package com.miet.pin23.pasechnik;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-import java.util.Timer;
 
 public class Logger {
     private static LocalTime time;

@@ -9,6 +9,7 @@ public class GradientPanel extends JPanel {
         @Override
         protected void paintComponent(Graphics grphcs) {
             super.paintComponent(grphcs);
+            //System.out.println ( "GradientPanel is drawn" );
             Graphics2D g2d = (Graphics2D) grphcs;
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);

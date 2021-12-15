@@ -153,7 +153,7 @@ public class Lab6 extends JFrame {
         super ( title );
         this.setDefaultCloseOperation ( JFrame.EXIT_ON_CLOSE );
         this.setContentPane ( panel1 );
-        panel1.setBackground ( null );
+        //panel1.setBackground ( null );
         this.pack ( );
         currentResult.setText ( null );
         sqrtFrame.setDefaultCloseOperation ( JFrame.EXIT_ON_CLOSE );

@@ -1,12 +1,9 @@
 package com.miet.pin23.pasechnik;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
-import java.util.logging.Level;
 
 public class myProperties {
     private static Logger log = new Logger ( myProperties.class.getName ( ) );
@@ -25,7 +22,6 @@ public class myProperties {
                 exceptionHandler.makeErr ("Properties hasn't been read",exc);
             }
 
-            Date time = new Date ( System.currentTimeMillis ( ) );
         } catch (Exception e) {
             e.printStackTrace ( );
         }

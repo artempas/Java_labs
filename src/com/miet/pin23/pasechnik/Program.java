@@ -439,6 +439,7 @@ public class Program {
 
         myProperties.propFileName = SETTINGS_FILENAME;
         Logger.writer = new LogWriter ( propReader.getPropValues ( Props.log_to_file ) );
+
         Window loading_win = new Window ( windowType.LOADING );
         ArrayList<Long> yAll = lab4 ( true );
         System.out.println ( yAll );
